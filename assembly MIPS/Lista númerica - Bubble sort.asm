@@ -1,7 +1,3 @@
-#EQUIPE 
-#Nome1: Immanuel Barreira (20215618)
-#Aluno2: Luís Eduardo de Paula Albuquerque (2323230)
-
 .eqv char $s7
 .eqv digito $s6
 .eqv index_lb $t0
