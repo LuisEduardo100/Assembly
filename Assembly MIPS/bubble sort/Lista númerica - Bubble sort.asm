@@ -1,7 +1,3 @@
-#EQUIPE 
-#Nome1: Immanuel Barreira (20215618)
-#Aluno2: Luís Eduardo de Paula Albuquerque (2323230)
-
 .eqv char $s7
 .eqv digito $s6
 .eqv index_lb $t0
@@ -38,23 +34,23 @@ read_file:
 	move buffer, $v0
 conversor: 
 	lb char, inputBuffer(index_lb)
-	add index_lb, index_lb, 1
-	beq char, 0, store
-	beq char, '-', sinal
-	beq char, ',', store
-	sub digito, char, 0x30
-	mul num, num, 10
-	add num, num, digito
-	j conversor
+	add index_lb, index_lb, 1 #incrementando o contador do load byte para armazenar 1byte em char
+	beq char, 0, store # se for 0, ou seja, se chegar no final da lista, vá para store
+	beq char, '-', sinal # com estamos lendo string, então se char = hífen, vá para sinal 
+	beq char, ',', store # se for igual a uma vírgula, leu um número completo, armazene o número convertido
+	sub digito, char, 0x30 # conversão de char para número inteiro subtraindo char - 0x30
+	mul num, num, 10 # num = num * 10 
+	add num, num, digito # num = num + digito (digito é o número convertido) 
+	j conversor # volta para o início do loop conversor e repete tudo 
 sinal: 
-	li multiplicador, -1
-	j  conversor
+	li multiplicador, -1 # essa parte certificará de manter o número positivo ou negativo 
+	j  conversor 	     # se o char = hífen, então multiplica o multiplicador = 1 por -1 
 store: 
-	mul num, num, multiplicador
-	sw num, inputBuffer(index_sw)
-	add index_sw, index_sw, 4
-	beq char, 0, main
-	j start
+	mul num, num, multiplicador  # num = num * multiplicador ( 1 ou -1 ) 
+	sw num, inputBuffer(index_sw) # armazenar o valor convertido em num 
+	add index_sw, index_sw, 4 # contador para percorrer um número inteiro representado por 4 bytes (1byte cada elemento dentro do array)
+	beq char, 0, main # se char = 0, então vai para main executar o bubble sort
+	j start # se não, volte para o começo e repita tudo até percorrer todos os números 
 main:
 	la $s7, inputBuffer #endereço do array com os número inteiros convertidos 
 	li $s0, 0	#contador 1 para o primeiro loop (loop)
@@ -63,7 +59,7 @@ main:
 	li $t3, 0	#contador para printar os números
 	li $t4, 100	#quantidade de números a serem printados 
 	li $v0, 4	#print string 
-	la $a0, message
+	la $a0, message # variável determinada em .data para imprimir no console Run I/O
 	syscall
 sort:
 	sll $t7, $s1, 2	#multiplica s1 por 2 e coloca em t7
@@ -94,7 +90,7 @@ printar:
 	addi $t3, $t3, 1 #contador dos números
 	j printar
 exit: 
-	li $v0, 10
+	li $v0, 10 # encerra o programa 
 	syscall 
 
 	
